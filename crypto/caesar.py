@@ -26,6 +26,9 @@ class Ceaser:
 
     info = CeaserData()
 
+    def __init__(self):
+        self.info = CeaserData()
+
     def ceaser(self, array, move):
         res = []
         i = 0
