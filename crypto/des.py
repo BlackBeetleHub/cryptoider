@@ -5,7 +5,6 @@ import numpy as np
 
 
 class Des:
-    # Длина ключа и сообщения.
     LENGTH = 8
 
     # Начальная перестановка.
@@ -138,32 +137,32 @@ class Des:
     @staticmethod
     def split_to_pair(x: np.array) -> tuple:
         """
-        Разделяет массив бит на 2 половины.
-        :param x:
-        :return:
-        """
+                Разделяет массив бит на 2 половины.
+                :param x:
+                :return:
+                """
 
         return np.array(x[:len(x) // 2]), np.array(x[len(x) // 2:])
 
     @staticmethod
     def permutation(x: np.array, rule: list) -> np.array:
         """
-        Осуществляет перестановку бит массива в соответствии с переданным правилом.
-        :param x:    Массив для перестановки бит.
-        :param rule: Правило перестановки (массив с новым порядком бит, заданным их номерами начиная с 1).
-        :return:
-        """
+                Осуществляет перестановку бит массива в соответствии с переданным правилом.
+                :param x:    Массив для перестановки бит.
+                :param rule: Правило перестановки (массив с новым порядком бит, заданным их номерами начиная с 1).
+                :return:
+                """
 
         return np.array([x[i - 1] for i in rule])
 
     @staticmethod
     def s_change(x: np.array, s_rule: list) -> int:
         """
-        Осуществляет замену в соответстии с таблицей замены S-блока.
-        :param x:      Массив для замены.
-        :param s_rule: Правило замены - двумерный массив с правилом работы S-блока.
-        :return:
-        """
+                Осуществляет замену в соответстии с таблицей замены S-блока.
+                :param x:      Массив для замены.
+                :param s_rule: Правило замены - двумерный массив с правилом работы S-блока.
+                :return:
+                """
 
         '''
         Вычисление индекса строки и столбца правила замены в S-блоке (с 0):
@@ -179,11 +178,11 @@ class Des:
     @staticmethod
     def feistel(r: np.array, round_key: np.array) -> np.array:
         """
-        Повторяет работу функции Фейстеля.
-        :param r:
-        :param round_key:
-        :return:
-        """
+                Повторяет работу функции Фейстеля.
+                :param r:
+                :param round_key:
+                :return:
+                """
 
         # XOR раундового ключа и результата расширенной перестановки над правой половиной блока.
         r_48 = np.bitwise_xor(Des.permutation(r, Des.EXPAND_PERMUTATION), round_key)
@@ -195,13 +194,23 @@ class Des:
         return Des.permutation(Des.to_bit_array(r_s, 4), Des.P_PERMUTATION)
 
     @staticmethod
+    def get_entropy(round_array: np.array):
+        num_of_elem = round_array.size
+        num_of_zeros = len(list(filter(lambda a: a == 0, round_array)))
+        num_of_ones = len(list(filter(lambda a: a == 1, round_array)))
+        probability = list((num_of_zeros/num_of_elem, num_of_ones/num_of_elem))
+        entropy = np.math.fabs(sum(map(lambda a: probability[a] * np.math.log(probability[a], 2), round_array)))
+        return entropy / round_array.size
+
+    # Длина ключа и сообщения.
+    @staticmethod
     def get_round_key(key: np.array, round_number: int) -> np.array:
         """
-        Формирует рауновый ключ.
-        :param key:
-        :param round_number:
-        :return:
-        """
+                Формирует рауновый ключ.
+                :param key:
+                :param round_number:
+                :return:
+                """
 
         if round_number not in range(1, 17):
             return 0
@@ -288,7 +297,10 @@ class Des:
             print('     Результат раунда {}'.format(np.concatenate((l, r))))
             round_data = {
                 'num_round': round_count,
-                'res': '{}'.format(np.concatenate((l, r)))
+                'res': '{}'.format(np.concatenate((l, r))),
+                'entropy': '{}'.format(Des.get_entropy(np.concatenate((l, r)))),
+                'num_of_zeros: ': '{}'.format(len(list(filter(lambda a: a == 0, np.concatenate((l, r)))))),
+                'num_of_ones: ': '{}'.format(len(list(filter(lambda a: a == 1, np.concatenate((l, r))))))
             }
             list_rounds.append(round_data)
 
