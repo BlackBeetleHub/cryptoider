@@ -24,10 +24,10 @@ class CeaserData:
 
 class Ceaser:
 
-    info = CeaserData()
+    info_steps = CeaserData()
 
     def __init__(self):
-        self.info = CeaserData()
+        self.info_steps = CeaserData()
 
     def ceaser(self, array, move):
         res = []
@@ -35,8 +35,8 @@ class Ceaser:
         for x in array:
             n_char = ord(x)
             res.append(chr(n_char + move))
-            self.info.add_step(i, res[:],
-                               {
+            self.info_steps.add_step(i, res[:],
+                                     {
                                    'old_char_code': n_char,
                                    'move': move,
                                    'new_char_code': n_char + move
