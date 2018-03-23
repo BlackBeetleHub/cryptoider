@@ -10,7 +10,6 @@ app = Flask(__name__)
 
 @app.route('/')
 def homepage():
-    the_time = datetime.now().strftime("%A, %d %b %Y %l:%M %p")
 
     return "Hello, Denis. Hello Sasha. Hello Kirill."
 
@@ -27,7 +26,7 @@ def ceaser():
 @app.route('/des')
 def des():
     type = request.args.get('type')
-    m = request.args.get('massage')
+    m = request.args.get('message')
     k = request.args.get('key')
     n_rounds = request.args.get('round')
     if len(m) % 8 != 0:
@@ -35,9 +34,7 @@ def des():
             m += " "
     message, key = Des.str_to_bit_array(m), Des.str_to_bit_array(k)
     if type == 'encrypt':
-
         ecrypted_m = Des.des_encrypt(message, key, int(n_rounds))
-
         return ecrypted_m
     else:
         decrypred_m = Des.des_decrypt(message, key, n_rounds)
